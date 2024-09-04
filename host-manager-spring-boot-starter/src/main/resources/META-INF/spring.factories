@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.github.gsq.hm.config.MasterAutoConfigure, \
+io.github.gsq.hm.config.SlaveAutoConfigure
+#org.springframework.context.ApplicationListener=\
