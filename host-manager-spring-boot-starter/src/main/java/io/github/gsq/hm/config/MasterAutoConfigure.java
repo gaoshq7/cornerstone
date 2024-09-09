@@ -1,11 +1,11 @@
 package io.github.gsq.hm.config;
 
 import cn.hutool.core.util.StrUtil;
+import io.github.gsq.hm.master.HmServer;
+import io.github.gsq.hm.master.HostManager;
+import io.github.gsq.hm.master.HostManagerImpl;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Condition;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
@@ -21,7 +21,15 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 @EnableConfigurationProperties(MProperties.class)
 public class MasterAutoConfigure {
 
+    @Bean(name = "host_manager_server")
+    public HmServer hmServer() {
+        return new HmServer();
+    }
 
+    @Bean(name = "host_manager")
+    public HostManager hostManager() {
+        return new HostManagerImpl();
+    }
 
     protected static class MCondition implements Condition {
 

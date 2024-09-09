@@ -1,11 +1,9 @@
 package io.github.gsq.hm.config;
 
 import cn.hutool.core.util.StrUtil;
+import io.github.gsq.hm.slave.HmClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Condition;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
@@ -21,7 +19,10 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 @EnableConfigurationProperties(SProperties.class)
 public class SlaveAutoConfigure {
 
-
+    @Bean(name = "host_manager_client")
+    public HmClient hmClient() {
+        return new HmClient();
+    }
 
     protected static class SCondition implements Condition {
 
