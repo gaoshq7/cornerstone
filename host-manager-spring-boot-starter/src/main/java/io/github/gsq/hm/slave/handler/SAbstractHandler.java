@@ -1,5 +1,6 @@
 package io.github.gsq.hm.slave.handler;
 
+import io.github.gsq.hm.common.protobuf.Message;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -12,7 +13,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @note : It's not technology, it's art !
  **/
 @ChannelHandler.Sharable
-public abstract class SAbstractHandler extends SimpleChannelInboundHandler<String> {
+public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Message.BaseMsg> {
 
 
 

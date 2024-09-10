@@ -1,10 +1,24 @@
 package io.github.gsq.hm.config;
 
 import cn.hutool.core.util.StrUtil;
+import io.github.gsq.hm.common.protobuf.Message;
 import io.github.gsq.hm.slave.HmClient;
+import io.github.gsq.hm.slave.handler.SHeartbeatHandler;
+import io.github.gsq.hm.slave.handler.SLoginHandler;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.timeout.IdleStateHandler;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.springframework.core.type.AnnotatedTypeMetadata;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Project : cornerstone
@@ -20,8 +34,24 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 public class SlaveAutoConfigure {
 
     @Bean(name = "host_manager_client")
-    public HmClient hmClient() {
-        return new HmClient();
+    public HmClient hmClient(@Qualifier("channel_initializer") ChannelInitializer<SocketChannel> initializer, MProperties properties) {
+        return new HmClient(properties.getIp(), properties.getPort(), initializer);
+    }
+
+    @Bean(name = "channel_initializer")
+    public ChannelInitializer<SocketChannel> channelInitializer() {
+        return new ChannelInitializer<SocketChannel>() {
+            @Override
+            protected void initChannel(SocketChannel socketChannel) {
+                ChannelPipeline cp = socketChannel.pipeline();
+                cp.addLast("idleStateHandler", new IdleStateHandler(0, 10, 0, TimeUnit.SECONDS));
+                cp.addLast(new ProtobufVarint32FrameDecoder());
+                cp.addLast(new ProtobufDecoder(Message.BaseMsg.getDefaultInstance()));
+                cp.addLast(new ProtobufVarint32LengthFieldPrepender());
+                cp.addLast(new ProtobufEncoder());
+                cp.addLast(new SHeartbeatHandler(), new SLoginHandler());
+            }
+        };
     }
 
     protected static class SCondition implements Condition {

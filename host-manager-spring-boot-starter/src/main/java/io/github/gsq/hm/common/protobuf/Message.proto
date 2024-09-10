@@ -6,7 +6,7 @@ import "Command.proto";
 package io.github.gsq.hm.common.protobuf;
 
 option java_outer_classname = "Message";
-option java_multiple_files = true;
+option java_multiple_files = false;
 
 message BaseMsg {
 
@@ -18,7 +18,7 @@ message BaseMsg {
 	/**
 	 * 指令类型
 	 */
-	CommandType cmd = 2;
+	CommandType type = 2;
 
 	/**
 	 * 指令包

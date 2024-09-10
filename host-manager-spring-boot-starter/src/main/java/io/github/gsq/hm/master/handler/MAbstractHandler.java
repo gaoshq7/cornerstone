@@ -1,6 +1,7 @@
 package io.github.gsq.hm.master.handler;
 
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.AttributeKey;
 
@@ -16,5 +17,9 @@ import io.netty.util.AttributeKey;
 public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
 
     protected final AttributeKey<String> clientInfo = AttributeKey.valueOf("clientInfo");
+
+    protected final String getClientId(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(clientInfo).get();
+    }
 
 }
