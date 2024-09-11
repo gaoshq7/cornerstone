@@ -1,0 +1,8 @@
+server:
+  port: 5555
+
+cornerstone:
+  hm:
+    master:
+      ip: 127.0.0.1
+      port: 19999

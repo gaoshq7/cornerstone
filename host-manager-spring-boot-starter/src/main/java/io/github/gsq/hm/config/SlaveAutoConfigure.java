@@ -35,7 +35,7 @@ public class SlaveAutoConfigure {
 
     @Bean(name = "host_manager_client")
     public HmClient hmClient(@Qualifier("channel_initializer") ChannelInitializer<SocketChannel> initializer, MProperties properties) {
-        return new HmClient(properties.getIp(), properties.getPort(), initializer);
+        return new HmClient(initializer, properties.getIp(), properties.getPort());
     }
 
     @Bean(name = "channel_initializer")

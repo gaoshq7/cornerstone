@@ -48,24 +48,8 @@ public class MasterAutoConfigure {
     }
 
     @Bean(name = "host_manager_server")
-    public HmServer hmServer(@Qualifier("server_bootstrap") ServerBootstrap bootstrap, MProperties properties) {
-        return new HmServer(
-                bootstrap,
-                new InetSocketAddress(properties.getIp(), properties.getPort())
-        );
-    }
-
-    @Bean(name = "server_bootstrap")
-    public ServerBootstrap bootstrap(@Qualifier("channel_initializer") ChannelInitializer<SocketChannel> initializer) {
-        ServerBootstrap bootstrap = new ServerBootstrap();
-        bootstrap.group(new NioEventLoopGroup(2), new NioEventLoopGroup(20))
-                .channel(NioServerSocketChannel.class)
-                .handler(new LoggingHandler(LogLevel.INFO))
-                .childHandler(initializer);
-        bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-        bootstrap.option(ChannelOption.SO_BACKLOG, 100);
-        bootstrap.option(ChannelOption.TCP_NODELAY,true);
-        return bootstrap;
+    public HmServer hmServer(@Qualifier("channel_initializer") ChannelInitializer<SocketChannel> initializer, MProperties properties) {
+        return new HmServer(initializer, new InetSocketAddress(properties.getIp(), properties.getPort()));
     }
 
     @Bean(name = "channel_initializer")
