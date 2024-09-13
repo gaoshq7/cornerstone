@@ -16,10 +16,10 @@ import io.netty.util.AttributeKey;
 @ChannelHandler.Sharable
 public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
 
-    protected final AttributeKey<String> clientInfo = AttributeKey.valueOf("clientInfo");
+    protected final AttributeKey<String> clientId = AttributeKey.valueOf("clientId");
 
     protected final String getClientId(ChannelHandlerContext ctx) {
-        return ctx.channel().attr(clientInfo).get();
+        return ctx.channel().attr(clientId).get();
     }
 
 }
