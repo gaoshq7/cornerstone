@@ -4,5 +4,4 @@ server:
 cornerstone:
   hm:
     slave:
-      server: 127.0.0.1
-      port: 19999
+      enabled: true

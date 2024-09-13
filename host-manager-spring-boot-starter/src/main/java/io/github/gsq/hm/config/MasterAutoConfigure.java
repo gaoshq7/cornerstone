@@ -1,25 +1,18 @@
 package io.github.gsq.hm.config;
 
-import cn.hutool.core.util.StrUtil;
 import io.github.gsq.hm.common.protobuf.Message;
 import io.github.gsq.hm.master.HmServer;
 import io.github.gsq.hm.master.HostManager;
 import io.github.gsq.hm.master.HostManagerImpl;
 import io.github.gsq.hm.master.handler.MHeartbeatHandler;
 import io.github.gsq.hm.master.handler.MLoginHandler;
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -72,9 +65,8 @@ public class MasterAutoConfigure {
 
         @Override
         public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            String mip = context.getEnvironment().getProperty("cornerstone.hm.master.ip");
-            String sip = context.getEnvironment().getProperty("cornerstone.hm.slave.server");
-            return StrUtil.isNotBlank(mip) && StrUtil.isBlank(sip);
+            String isEnable = context.getEnvironment().getProperty("cornerstone.hm.master.enabled");
+            return Boolean.parseBoolean(isEnable);
         }
 
     }

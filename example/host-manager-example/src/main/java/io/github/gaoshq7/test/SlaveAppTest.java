@@ -1,9 +1,12 @@
 package io.github.gaoshq7.test;
 
+import cn.hutool.extra.spring.SpringUtil;
+import io.github.gsq.hm.slave.HmClient;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Project : cornerstone
@@ -14,6 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @note : It's not technology, it's art !
  **/
 @SpringBootApplication
+@ComponentScan(basePackages = "io.github.gaoshq7.test.slave")
 public class SlaveAppTest implements ApplicationRunner {
 
     public static void main(String[] args) {
@@ -21,8 +25,10 @@ public class SlaveAppTest implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
-
+    public void run(ApplicationArguments args) {
+        HmClient client = SpringUtil.getBean(HmClient.class);
+        client.run();
+        System.out.println("心跳终端已启动 ...");
     }
 
 }

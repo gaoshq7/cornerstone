@@ -1,6 +1,5 @@
 package io.github.gsq.hm.config;
 
-import cn.hutool.core.util.StrUtil;
 import io.github.gsq.hm.common.protobuf.Message;
 import io.github.gsq.hm.slave.HmClient;
 import io.github.gsq.hm.slave.handler.SHeartbeatHandler;
@@ -34,8 +33,8 @@ import java.util.concurrent.TimeUnit;
 public class SlaveAutoConfigure {
 
     @Bean(name = "host_manager_client")
-    public HmClient hmClient(@Qualifier("channel_initializer") ChannelInitializer<SocketChannel> initializer, MProperties properties) {
-        return new HmClient(initializer, properties.getIp(), properties.getPort());
+    public HmClient hmClient(@Qualifier("channel_initializer") ChannelInitializer<SocketChannel> initializer, SProperties properties) {
+        return new HmClient(initializer, properties.getServer(), properties.getPort());
     }
 
     @Bean(name = "channel_initializer")
@@ -58,9 +57,8 @@ public class SlaveAutoConfigure {
 
         @Override
         public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            String mip = context.getEnvironment().getProperty("cornerstone.hm.master.ip");
-            String sip = context.getEnvironment().getProperty("cornerstone.hm.slave.server");
-            return StrUtil.isNotBlank(sip) && StrUtil.isBlank(mip);
+            String isEnable = context.getEnvironment().getProperty("cornerstone.hm.slave.enabled");
+            return Boolean.parseBoolean(isEnable);
         }
 
     }
