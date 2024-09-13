@@ -17,7 +17,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "cornerstone.hm.master")
 public class MProperties {
 
-    private String ip;
+    private String ip = "0.0.0.0";
 
     private Integer port = 19999;
 

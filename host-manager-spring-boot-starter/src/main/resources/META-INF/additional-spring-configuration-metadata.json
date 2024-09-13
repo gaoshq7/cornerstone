@@ -1,0 +1,32 @@
+{
+  "properties": [
+    {
+      "name": "cornerstone.hm.master.ip",
+      "type": "java.lang.String",
+      "description": "心跳接收服务网络接口.",
+      "sourceType": "io.github.gsq.hm.config.MProperties",
+      "defaultValue": "0.0.0.0"
+    },
+    {
+      "name": "cornerstone.hm.master.port",
+      "type": "java.lang.Integer",
+      "description": "心跳接收服务端口号.",
+      "sourceType": "io.github.gsq.hm.config.MProperties",
+      "defaultValue": 19999
+    },
+    {
+      "name": "cornerstone.hm.slave.server",
+      "type": "java.lang.String",
+      "description": "心跳服务网络IP地址.",
+      "sourceType": "io.github.gsq.hm.config.SProperties",
+      "defaultValue": "127.0.0.1"
+    },
+    {
+      "name": "cornerstone.hm.slave.port",
+      "type": "java.lang.Integer",
+      "description": "心跳服务端口号.",
+      "sourceType": "io.github.gsq.hm.config.SProperties",
+      "defaultValue": 19999
+    }
+  ]
+}

@@ -36,6 +36,7 @@ public class HmClient {
     }
 
     public void run() {
+        stop();
         this.group = new NioEventLoopGroup();
         loopConnect(this.group);
     }

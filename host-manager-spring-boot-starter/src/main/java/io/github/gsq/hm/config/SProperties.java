@@ -17,7 +17,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "cornerstone.hm.slave")
 public class SProperties {
 
-    private String server;
+    private String server = "127.0.0.1";
 
     private Integer port = 19999;
 

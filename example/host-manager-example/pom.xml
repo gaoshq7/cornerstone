@@ -21,7 +21,7 @@
 
         <dependency>
             <groupId>io.github.gaoshq7</groupId>
-            <artifactId>host-manager-example</artifactId>
+            <artifactId>host-manager-spring-boot-starter</artifactId>
             <version>1.0.0-Alpha</version>
         </dependency>
 

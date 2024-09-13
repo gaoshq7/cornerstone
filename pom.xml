@@ -107,16 +107,39 @@
 
   <build>
     <plugins>
+      <!-- JDK ENV -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-toolchains-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>toolchain</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <toolchains>
+            <jdk>
+              <version>21</version>
+              <vendor>JDK21</vendor>
+            </jdk>
+          </toolchains>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.13.0</version>
         <configuration>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
           <encoding>${project.build.sourceEncoding}</encoding>
         </configuration>
       </plugin>
+
       <!-- Source -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

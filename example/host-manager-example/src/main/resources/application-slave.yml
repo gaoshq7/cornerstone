@@ -6,6 +6,3 @@ cornerstone:
     slave:
       server: 127.0.0.1
       port: 19999
-
-
-

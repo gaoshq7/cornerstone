@@ -41,7 +41,8 @@ public class HmServer {
         this.groups = CollUtil.newArrayList();
     }
 
-    public synchronized void start() throws InterruptedException {
+    public void start() throws InterruptedException {
+        stop();
         ServerBootstrap bootstrap = new ServerBootstrap();
         EventLoopGroup parent = new NioEventLoopGroup(2);
         EventLoopGroup child = new NioEventLoopGroup(20);
@@ -67,7 +68,7 @@ public class HmServer {
         return this.channel != null && this.channel.isActive();
     }
 
-    public synchronized void stop() {
+    public void stop() {
         if (this.channel != null) {
             this.channel.close();
             this.channel = null;
