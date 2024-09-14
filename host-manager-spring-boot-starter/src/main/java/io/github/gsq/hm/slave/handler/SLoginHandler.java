@@ -22,18 +22,19 @@ public class SLoginHandler extends SAbstractHandler {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         ctx.writeAndFlush(MsgUtil.createMsg(Constant.HOSTNAME, Command.CommandType.AUTH, UUID.fastUUID().toString(true)));
+        debug("开始注册 ...");
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message.BaseMsg msg) {
         if (msg.getType() == Command.CommandType.AUTH_BACK) {
-            System.out.println("连接成功");
+            debug("收到回执: " + msg.getData());
         }
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        System.out.println("线路断开");
+        warn("线路断开了");
     }
 
 }

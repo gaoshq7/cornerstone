@@ -33,9 +33,7 @@ public class MHeartbeatHandler extends MAbstractHandler {
         Message.BaseMsg msg = (Message.BaseMsg) data;
         Channel channel = ctx.channel();
         if (msg.getType() == Command.CommandType.PING) {
-            if (logger.isEnabled(InternalLogLevel.DEBUG)) {
-                logger.log(InternalLogLevel.DEBUG, "收到" + msg.getClientId() + "的消息：" + msg.getData());
-            }
+            debug("收到" + msg.getClientId() + "的消息：" + msg.getData());
         } else {
             if (channel.isOpen()) {
                 //触发下一个handler

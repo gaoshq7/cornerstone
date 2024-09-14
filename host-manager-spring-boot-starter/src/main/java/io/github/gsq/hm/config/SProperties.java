@@ -19,6 +19,8 @@ public class SProperties {
 
     private boolean enabled = false;
 
+    private boolean debug = false;
+
     private String server = "127.0.0.1";
 
     private Integer port = 19999;

@@ -8,6 +8,13 @@
       "defaultValue": false
     },
     {
+      "name": "cornerstone.hm.master.debug",
+      "type": "java.lang.Boolean",
+      "description": "是否开启主进程调试模式.",
+      "sourceType": "io.github.gsq.hm.config.MProperties",
+      "defaultValue": false
+    },
+    {
       "name": "cornerstone.hm.master.ip",
       "type": "java.lang.String",
       "description": "心跳接收服务网络接口.",
@@ -25,6 +32,13 @@
       "name": "cornerstone.hm.slave.enabled",
       "type": "java.lang.Boolean",
       "description": "是否开启心跳终端模式.",
+      "sourceType": "io.github.gsq.hm.config.SProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "cornerstone.hm.slave.debug",
+      "type": "java.lang.Boolean",
+      "description": "是否开启从进程调试模式.",
       "sourceType": "io.github.gsq.hm.config.SProperties",
       "defaultValue": false
     },

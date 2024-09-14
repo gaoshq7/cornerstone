@@ -1,5 +1,6 @@
 package io.github.gsq.hm.master.handler;
 
+import io.github.gsq.hm.common.MsgUtil;
 import io.github.gsq.hm.common.protobuf.Command;
 import io.github.gsq.hm.common.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;
@@ -20,13 +21,14 @@ public class MLoginHandler extends MAbstractHandler {
     public void channelRead(ChannelHandlerContext ctx, Object data) {
         Message.BaseMsg msg = (Message.BaseMsg) data;
         if (msg.getType() == Command.CommandType.AUTH) {
-            System.out.println(msg.getClientId() + "前来注册");
+            info(msg.getClientId() + "前来注册: " + msg.getData());
         }
+        ctx.channel().writeAndFlush(MsgUtil.createMsg("", Command.CommandType.AUTH_BACK, "你小子可以"));
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        System.out.println(getClientId(ctx) + "失去连接");
+        warn(getClientId(ctx) + "失去连接");
     }
 
 }

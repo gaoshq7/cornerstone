@@ -28,7 +28,6 @@ public class MasterAppTest implements ApplicationRunner {
     public void run(ApplicationArguments args) throws InterruptedException {
         HmServer server = SpringUtil.getBean(HmServer.class);
         server.start();
-        System.out.println("心跳服务已启动 ...");
     }
 
 }

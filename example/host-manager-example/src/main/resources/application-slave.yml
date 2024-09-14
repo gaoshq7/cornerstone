@@ -5,3 +5,4 @@ cornerstone:
   hm:
     slave:
       enabled: true
+      debug: true

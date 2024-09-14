@@ -5,3 +5,4 @@ cornerstone:
   hm:
     master:
       enabled: true
+      debug: true

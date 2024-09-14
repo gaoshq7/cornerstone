@@ -20,6 +20,10 @@ public final class Constant {
 
     public static final String HOSTIP = HostnameUtil.getHostIp();
 
+    public static final String MASTER = "master";
+
+    public static final String SLAVE = "slave";
+
     public static final class HostnameUtil {
 
         public static String getHostname() {
