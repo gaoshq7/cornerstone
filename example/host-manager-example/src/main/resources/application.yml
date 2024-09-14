@@ -1,3 +1,8 @@
 spring:
   profiles:
     active: ${ROLE}
+
+logging:
+  level:
+    io.netty: error
+    io.github.gsq: debug

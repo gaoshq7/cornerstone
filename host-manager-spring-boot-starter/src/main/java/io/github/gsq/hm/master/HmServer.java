@@ -50,9 +50,9 @@ public class HmServer {
                 .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(this.initializer);
-        bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.option(ChannelOption.SO_BACKLOG, 100);
-        bootstrap.option(ChannelOption.TCP_NODELAY,true);
+        bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+        bootstrap.childOption(ChannelOption.TCP_NODELAY,true);
         this.groups.add(parent);
         this.groups.add(child);
         this.channel = bootstrap

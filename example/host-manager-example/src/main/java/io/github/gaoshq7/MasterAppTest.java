@@ -1,4 +1,4 @@
-package io.github.gaoshq7.test;
+package io.github.gaoshq7;
 
 import cn.hutool.extra.spring.SpringUtil;
 import io.github.gsq.hm.master.HmServer;
@@ -17,7 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @note : It's not technology, it's art !
  **/
 @SpringBootApplication
-@ComponentScan(basePackages = "io.github.gaoshq7.test.master")
+@ComponentScan(basePackages = "io.github.gaoshq7.master")
 public class MasterAppTest implements ApplicationRunner {
 
     public static void main(String[] args) {

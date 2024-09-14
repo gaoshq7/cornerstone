@@ -4,8 +4,10 @@ import io.github.gsq.hm.common.protobuf.Command;
 import io.github.gsq.hm.common.protobuf.Message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.logging.LogLevel;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
+import io.netty.util.internal.logging.InternalLogLevel;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,7 +33,9 @@ public class MHeartbeatHandler extends MAbstractHandler {
         Message.BaseMsg msg = (Message.BaseMsg) data;
         Channel channel = ctx.channel();
         if (msg.getType() == Command.CommandType.PING) {
-            System.out.println("收到" + msg.getClientId() + "的消息：" + msg.getData());
+            if (logger.isEnabled(InternalLogLevel.DEBUG)) {
+                logger.log(InternalLogLevel.DEBUG, "收到" + msg.getClientId() + "的消息：" + msg.getData());
+            }
         } else {
             if (channel.isOpen()) {
                 //触发下一个handler
