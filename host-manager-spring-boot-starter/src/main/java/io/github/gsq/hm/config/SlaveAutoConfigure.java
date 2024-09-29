@@ -43,7 +43,7 @@ public class SlaveAutoConfigure {
             @Override
             protected void initChannel(SocketChannel socketChannel) {
                 ChannelPipeline cp = socketChannel.pipeline();
-                cp.addLast("idleStateHandler", new IdleStateHandler(0, 10, 0, TimeUnit.SECONDS));
+                cp.addLast(new IdleStateHandler(0, 10, 0, TimeUnit.SECONDS));
                 cp.addLast(new ProtobufVarint32FrameDecoder());
                 cp.addLast(new ProtobufDecoder(Message.BaseMsg.getDefaultInstance()));
                 cp.addLast(new ProtobufVarint32LengthFieldPrepender());

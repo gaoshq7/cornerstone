@@ -51,7 +51,7 @@ public class MasterAutoConfigure {
             @Override
             protected void initChannel(SocketChannel socketChannel) {
                 ChannelPipeline cp = socketChannel.pipeline();
-                cp.addLast("idleStateHandler", new IdleStateHandler(15, 0, 0, TimeUnit.SECONDS));
+                cp.addLast(new IdleStateHandler(15, 0, 0, TimeUnit.SECONDS));
                 cp.addLast(new ProtobufVarint32FrameDecoder());
                 cp.addLast(new ProtobufDecoder(Message.BaseMsg.getDefaultInstance()));
                 cp.addLast(new ProtobufVarint32LengthFieldPrepender());

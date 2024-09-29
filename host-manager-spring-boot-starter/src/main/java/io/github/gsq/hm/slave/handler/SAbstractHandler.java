@@ -1,6 +1,11 @@
 package io.github.gsq.hm.slave.handler;
 
+import cn.hutool.extra.spring.SpringUtil;
 import io.github.gsq.hm.common.protobuf.Message;
+import io.github.gsq.hm.slave.HmClient;
+import io.github.gsq.hm.slave.handler.hook.IHeartbeatProvider;
+import io.github.gsq.hm.slave.handler.hook.ILoginProvider;
+import io.github.gsq.hm.slave.handler.hook.ISMsgReceiver;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.internal.logging.InternalLogLevel;
@@ -17,6 +22,14 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
  **/
 @ChannelHandler.Sharable
 public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Message.BaseMsg> {
+
+    private ILoginProvider loginProvider;
+
+    private IHeartbeatProvider heartbeatProvider;
+
+    private ISMsgReceiver msgReceiver;
+
+    private HmClient client;
 
     protected final InternalLogger logger;
 
@@ -46,6 +59,56 @@ public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Messa
         if (this.logger.isErrorEnabled()) {
             this.logger.log(InternalLogLevel.ERROR, msg);
         }
+    }
+
+    protected final ILoginProvider getLoginProvider() {
+        if (this.loginProvider == null) {
+            this.loginProvider = SpringUtil.getBean(ILoginProvider.class) != null ?
+                    SpringUtil.getBean(ILoginProvider.class) :
+                    new ILoginProvider() {
+
+                        @Override
+                        public String create() {
+                            return "";
+                        }
+
+                        @Override
+                        public boolean result(String data) {
+                            return true;
+                        }
+
+                    };
+        }
+        return this.loginProvider;
+    }
+
+    protected final IHeartbeatProvider getHeartbeatProvider() {
+        if (this.heartbeatProvider == null) {
+            this.heartbeatProvider = SpringUtil.getBean(IHeartbeatProvider.class) != null ?
+                    SpringUtil.getBean(IHeartbeatProvider.class) :
+                    new IHeartbeatProvider() {
+
+                    };
+        }
+        return this.heartbeatProvider;
+    }
+
+    protected final ISMsgReceiver getMsgReceiver() {
+        if (this.msgReceiver == null) {
+            this.msgReceiver = SpringUtil.getBean(ISMsgReceiver.class) != null ?
+                    SpringUtil.getBean(ISMsgReceiver.class) :
+                    new ISMsgReceiver() {
+
+                    };
+        }
+        return this.msgReceiver;
+    }
+
+    protected final HmClient getClient() {
+        if (this.client == null) {
+            this.client = SpringUtil.getBean(HmClient.class);
+        }
+        return this.client;
     }
 
 }
