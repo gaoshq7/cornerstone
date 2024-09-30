@@ -41,10 +41,6 @@ public class HmClient {
         loopConnect(this.group);
     }
 
-    public boolean isActive() {
-        return this.group != null && !group.isShutdown();
-    }
-
     public void stop() {
         if (this.group != null) {
             this.group.shutdownGracefully();

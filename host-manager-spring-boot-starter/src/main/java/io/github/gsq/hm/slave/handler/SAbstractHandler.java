@@ -73,8 +73,8 @@ public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Messa
                         }
 
                         @Override
-                        public boolean result(String data) {
-                            return true;
+                        public void result(String data) {
+
                         }
 
                     };

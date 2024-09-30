@@ -1,5 +1,9 @@
 package io.github.gsq.hm.master.handler;
 
+import cn.hutool.extra.spring.SpringUtil;
+import io.github.gsq.hm.common.models.LoginDTO;
+import io.github.gsq.hm.master.handler.hook.ILoginReceiver;
+import io.github.gsq.hm.slave.handler.hook.ILoginProvider;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -19,12 +23,18 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 @ChannelHandler.Sharable
 public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
 
+    private ILoginReceiver loginReceiver;
+
     protected final InternalLogger logger;
 
     protected final AttributeKey<String> clientId = AttributeKey.valueOf("clientId");
 
     protected MAbstractHandler() {
         this.logger = InternalLoggerFactory.getInstance(this.getClass());
+    }
+
+    protected final void setClientId(ChannelHandlerContext ctx, String clientId) {
+        ctx.channel().attr(this.clientId).set(clientId);
     }
 
     protected final String getClientId(ChannelHandlerContext ctx) {
@@ -53,6 +63,15 @@ public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
         if (this.logger.isErrorEnabled()) {
             this.logger.log(InternalLogLevel.ERROR, msg);
         }
+    }
+
+    protected final ILoginReceiver getLoginReceiver() {
+        if (this.loginReceiver == null) {
+            this.loginReceiver = SpringUtil.getBean(ILoginReceiver.class) != null ?
+                    SpringUtil.getBean(ILoginReceiver.class) :
+                    (clientId, data) -> new LoginDTO(true, "");
+        }
+        return this.loginReceiver;
     }
 
 }

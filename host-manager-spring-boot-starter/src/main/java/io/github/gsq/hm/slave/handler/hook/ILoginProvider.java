@@ -12,6 +12,6 @@ public interface ILoginProvider {
 
     String create();
 
-    boolean result(String data);
+    void result(String data);
 
 }
