@@ -88,6 +88,16 @@ public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Messa
                     SpringUtil.getBean(IHeartbeatProvider.class) :
                     new IHeartbeatProvider() {
 
+                        @Override
+                        public String create() {
+                            return "";
+                        }
+
+                        @Override
+                        public void result(String data) {
+
+                        }
+
                     };
         }
         return this.heartbeatProvider;
@@ -98,6 +108,21 @@ public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Messa
             this.msgReceiver = SpringUtil.getBean(ISMsgReceiver.class) != null ?
                     SpringUtil.getBean(ISMsgReceiver.class) :
                     new ISMsgReceiver() {
+
+                        @Override
+                        public void loseOnce() {
+
+                        }
+
+                        @Override
+                        public void loseTwice() {
+
+                        }
+
+                        @Override
+                        public void loseLink() {
+
+                        }
 
                     };
         }

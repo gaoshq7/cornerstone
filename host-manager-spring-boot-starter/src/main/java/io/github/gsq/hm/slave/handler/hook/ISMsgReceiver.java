@@ -9,4 +9,11 @@ package io.github.gsq.hm.slave.handler.hook;
  * @note : It's not technology, it's art !
  **/
 public interface ISMsgReceiver {
+
+    void loseOnce();
+
+    void loseTwice();
+
+    void loseLink();
+
 }

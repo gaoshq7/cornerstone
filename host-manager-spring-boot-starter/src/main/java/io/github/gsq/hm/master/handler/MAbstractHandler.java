@@ -2,8 +2,9 @@ package io.github.gsq.hm.master.handler;
 
 import cn.hutool.extra.spring.SpringUtil;
 import io.github.gsq.hm.common.models.LoginDTO;
+import io.github.gsq.hm.master.handler.hook.IHeartbeatReceiver;
 import io.github.gsq.hm.master.handler.hook.ILoginReceiver;
-import io.github.gsq.hm.slave.handler.hook.ILoginProvider;
+import io.github.gsq.hm.master.handler.hook.IMMsgReceiver;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -24,6 +25,10 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
 
     private ILoginReceiver loginReceiver;
+
+    private IHeartbeatReceiver heartbeatReceiver;
+
+    private IMMsgReceiver immMsgReceiver;
 
     protected final InternalLogger logger;
 
@@ -72,6 +77,28 @@ public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
                     (clientId, data) -> new LoginDTO(true, "");
         }
         return this.loginReceiver;
+    }
+
+    protected final IHeartbeatReceiver getHeartbeatReceiver() {
+        if (this.heartbeatReceiver == null) {
+            this.heartbeatReceiver = SpringUtil.getBean(IHeartbeatReceiver.class) != null ?
+                    SpringUtil.getBean(IHeartbeatReceiver.class) :
+                    (clientId, data) -> "";
+        }
+        return this.heartbeatReceiver;
+    }
+
+    protected final IMMsgReceiver getMsgReceiver() {
+        if (this.immMsgReceiver == null) {
+            this.immMsgReceiver = SpringUtil.getBean(IMMsgReceiver.class) != null ?
+                    SpringUtil.getBean(IMMsgReceiver.class) :
+                    new IMMsgReceiver() {
+
+
+
+                    };
+        }
+        return this.immMsgReceiver;
     }
 
 }

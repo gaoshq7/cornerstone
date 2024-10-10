@@ -18,11 +18,13 @@ public final class Constant {
 
     public static final String HOSTNAME = HostnameUtil.getHostname();
 
-    public static final String HOSTIP = HostnameUtil.getHostIp();
+    public static final String HOST_IP = HostnameUtil.getHostIp();
 
     public static final String MASTER = "master";
 
     public static final String SLAVE = "slave";
+
+    public static final int MAX_LOSE_TIME = 3;
 
     public static final class HostnameUtil {
 

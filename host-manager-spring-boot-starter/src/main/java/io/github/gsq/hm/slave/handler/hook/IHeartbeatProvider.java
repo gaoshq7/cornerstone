@@ -9,4 +9,9 @@ package io.github.gsq.hm.slave.handler.hook;
  * @note : It's not technology, it's art !
  **/
 public interface IHeartbeatProvider {
+
+    String create();
+
+    void result(String data);
+
 }

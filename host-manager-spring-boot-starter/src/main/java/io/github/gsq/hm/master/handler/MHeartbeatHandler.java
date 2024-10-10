@@ -1,14 +1,14 @@
 package io.github.gsq.hm.master.handler;
 
+import io.github.gsq.hm.Constant;
+import io.github.gsq.hm.common.MsgUtil;
 import io.github.gsq.hm.common.protobuf.Command;
 import io.github.gsq.hm.common.protobuf.Message;
+import io.github.gsq.hm.master.handler.hook.IHeartbeatReceiver;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.logging.LogLevel;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
-import io.netty.util.internal.logging.InternalLogLevel;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Project : cornerstone
@@ -18,13 +18,22 @@ import lombok.extern.slf4j.Slf4j;
  * @date : 2024-09-04 16:53
  * @note : It's not technology, it's art !
  **/
-@Slf4j
 public class MHeartbeatHandler extends MAbstractHandler {
 
+    private ThreadLocal<Integer> counter = ThreadLocal.withInitial(() -> 0);
+
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
-            System.out.println(getClientId(ctx) + "链接emo了");
+            String channelId = getClientId(ctx);
+            if (counter.get() >= Constant.MAX_LOSE_TIME) {
+                ctx.channel().close();
+                counter.set(0);
+            } else {
+                counter.set(counter.get() + 1);
+            }
+        } else {
+            super.userEventTriggered(ctx, evt);
         }
     }
 
@@ -33,10 +42,13 @@ public class MHeartbeatHandler extends MAbstractHandler {
         Message.BaseMsg msg = (Message.BaseMsg) data;
         Channel channel = ctx.channel();
         if (msg.getType() == Command.CommandType.PING) {
-            debug("收到" + msg.getClientId() + "的消息：" + msg.getData());
+            IHeartbeatReceiver receiver = getHeartbeatReceiver();
+            String result = receiver.handle(msg.getClientId(), msg.getData());
+            ctx.channel().writeAndFlush(
+                    MsgUtil.createMsg(getClientId(ctx), Command.CommandType.PONG, result)
+            );
         } else {
             if (channel.isOpen()) {
-                //触发下一个handler
                 ctx.fireChannelRead(msg);
             }
         }

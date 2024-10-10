@@ -1,7 +1,6 @@
 package io.github.gsq.hm.slave.handler;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import io.github.gsq.hm.Constant;
 import io.github.gsq.hm.common.MsgUtil;
@@ -10,10 +9,8 @@ import io.github.gsq.hm.common.protobuf.Command;
 import io.github.gsq.hm.common.protobuf.Message;
 import io.github.gsq.hm.slave.HmClient;
 import io.github.gsq.hm.slave.handler.hook.ILoginProvider;
-import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +22,6 @@ import java.util.concurrent.TimeUnit;
  * @date : 2024-09-04 16:56
  * @note : It's not technology, it's art !
  **/
-@Slf4j
 public class SLoginHandler extends SAbstractHandler {
 
     private final ThreadLocal<Boolean> identification = ThreadLocal.withInitial(() -> true);

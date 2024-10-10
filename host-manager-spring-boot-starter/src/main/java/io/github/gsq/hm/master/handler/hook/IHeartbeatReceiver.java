@@ -9,4 +9,7 @@ package io.github.gsq.hm.master.handler.hook;
  * @note : It's not technology, it's art !
  **/
 public interface IHeartbeatReceiver {
+
+    String handle(String clientId, String data);
+
 }
