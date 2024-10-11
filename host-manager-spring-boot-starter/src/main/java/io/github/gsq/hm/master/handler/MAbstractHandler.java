@@ -32,7 +32,7 @@ public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
 
     protected final InternalLogger logger;
 
-    protected final AttributeKey<String> clientId = AttributeKey.valueOf("clientId");
+    private final AttributeKey<String> clientId = AttributeKey.valueOf("clientId");
 
     protected MAbstractHandler() {
         this.logger = InternalLoggerFactory.getInstance(this.getClass());
@@ -94,7 +94,20 @@ public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
                     SpringUtil.getBean(IMMsgReceiver.class) :
                     new IMMsgReceiver() {
 
+                        @Override
+                        public void loseOnce(String clientId) {
 
+                        }
+
+                        @Override
+                        public void loseTwice(String clientId) {
+
+                        }
+
+                        @Override
+                        public void loseLink(String clientId) {
+
+                        }
 
                     };
         }

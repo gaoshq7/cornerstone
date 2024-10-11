@@ -9,4 +9,11 @@ package io.github.gsq.hm.master.handler.hook;
  * @note : It's not technology, it's art !
  **/
 public interface IMMsgReceiver {
+
+    void loseOnce(String clientId);
+
+    void loseTwice(String clientId);
+
+    void loseLink(String clientId);
+
 }

@@ -46,7 +46,7 @@ public class SHeartbeatHandler extends SAbstractHandler {
             reset();
             IHeartbeatProvider provider = getHeartbeatProvider();
             provider.result(msg.getData());
-            debug("收到心跳响应" + msg.getData());
+            debug("收到心跳响应：" + msg.getData());
         } else {
             if(ctx.channel().isOpen()) {
                 ctx.fireChannelRead(msg);
