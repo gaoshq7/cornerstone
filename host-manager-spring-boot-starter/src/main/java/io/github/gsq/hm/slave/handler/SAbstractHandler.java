@@ -1,6 +1,7 @@
 package io.github.gsq.hm.slave.handler;
 
 import cn.hutool.extra.spring.SpringUtil;
+import io.github.gsq.hm.common.EnvUtil;
 import io.github.gsq.hm.common.protobuf.Message;
 import io.github.gsq.hm.slave.HmClient;
 import io.github.gsq.hm.slave.handler.hook.IHeartbeatProvider;
@@ -63,8 +64,8 @@ public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Messa
 
     protected final ILoginProvider getLoginProvider() {
         if (this.loginProvider == null) {
-            this.loginProvider = SpringUtil.getBean(ILoginProvider.class) != null ?
-                    SpringUtil.getBean(ILoginProvider.class) :
+            ILoginProvider provider = EnvUtil.getBean(ILoginProvider.class);
+            this.loginProvider = provider != null ? provider :
                     new ILoginProvider() {
 
                         @Override
@@ -84,8 +85,8 @@ public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Messa
 
     protected final IHeartbeatProvider getHeartbeatProvider() {
         if (this.heartbeatProvider == null) {
-            this.heartbeatProvider = SpringUtil.getBean(IHeartbeatProvider.class) != null ?
-                    SpringUtil.getBean(IHeartbeatProvider.class) :
+            IHeartbeatProvider provider = EnvUtil.getBean(IHeartbeatProvider.class);
+            this.heartbeatProvider = provider != null ? provider :
                     new IHeartbeatProvider() {
 
                         @Override
@@ -105,8 +106,8 @@ public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Messa
 
     protected final ISMsgReceiver getMsgReceiver() {
         if (this.msgReceiver == null) {
-            this.msgReceiver = SpringUtil.getBean(ISMsgReceiver.class) != null ?
-                    SpringUtil.getBean(ISMsgReceiver.class) :
+            ISMsgReceiver receiver = EnvUtil.getBean(ISMsgReceiver.class);
+            this.msgReceiver = receiver != null ? receiver :
                     new ISMsgReceiver() {
 
                         @Override

@@ -2,6 +2,7 @@ package io.github.gsq.hm.master.handler;
 
 import cn.hutool.core.util.StrUtil;
 import io.github.gsq.hm.Constant;
+import io.github.gsq.hm.common.Event;
 import io.github.gsq.hm.common.MsgUtil;
 import io.github.gsq.hm.common.protobuf.Command;
 import io.github.gsq.hm.common.protobuf.Message;
@@ -29,7 +30,7 @@ public class MHeartbeatHandler extends MAbstractHandler {
             String clientId = getClientId(ctx);
             if (counter.get() >= Constant.MAX_LOSE_TIME) {
                 ctx.channel().close();
-                getMsgReceiver().loseLink(clientId);
+                getMsgReceiver().offline(clientId, Event.SLAVE_HEARTBEAT_TIMEOUT);
                 warn(clientId + "主机心跳包丢失三次，已断开链接。");
             } else {
                 note(clientId);

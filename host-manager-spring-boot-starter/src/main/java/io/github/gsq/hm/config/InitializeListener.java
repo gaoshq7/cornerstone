@@ -41,11 +41,11 @@ public class InitializeListener implements ApplicationListener<ContextRefreshedE
     }
 
     private void mInitialize(ApplicationContext context) {
-        System.out.println("将要启动主进程 ...");
+
     }
 
     private void sInitialize(ApplicationContext context) {
-        System.out.println("将要启动从进程 ...");
+
     }
 
 }

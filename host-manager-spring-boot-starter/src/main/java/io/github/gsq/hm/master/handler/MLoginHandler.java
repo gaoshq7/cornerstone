@@ -2,6 +2,7 @@ package io.github.gsq.hm.master.handler;
 
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
+import io.github.gsq.hm.common.Event;
 import io.github.gsq.hm.common.MsgUtil;
 import io.github.gsq.hm.common.models.LoginDTO;
 import io.github.gsq.hm.common.protobuf.Command;
@@ -26,15 +27,16 @@ public class MLoginHandler extends MAbstractHandler {
         Message.BaseMsg msg = (Message.BaseMsg) data;
         if (msg.getType() == Command.CommandType.AUTH) {
             auth.set(true);
-            debug(StrUtil.format("{}主机开始身份认证...", msg.getClientId()));
+            debug(StrUtil.format("{}主机提交认证信息：{}", msg.getClientId(), msg.getData()));
+            setClientId(ctx, msg.getClientId());
             ILoginReceiver receiver = getLoginReceiver();
             LoginDTO loginDTO = receiver.auth(msg.getClientId(), msg.getData());
             if (loginDTO.isAuth()) {
-                setClientId(ctx, msg.getClientId());
+                getMsgReceiver().online(msg.getClientId());
             }
             debug(StrUtil.format("{}主机认证结果：{}", msg.getClientId(), loginDTO));
             ctx.channel().writeAndFlush(
-                    MsgUtil.createMsg(getClientId(ctx), Command.CommandType.AUTH_BACK, loginDTO.toString())
+                    MsgUtil.createMsg(msg.getClientId(), Command.CommandType.AUTH_BACK, loginDTO.toString())
             );
             if (!loginDTO.isAuth()) {
                 auth.set(false);
@@ -54,6 +56,7 @@ public class MLoginHandler extends MAbstractHandler {
         } else {
             reason = "主机身份认证失败";
         }
+        getMsgReceiver().offline(getClientId(ctx), Event.SLAVE_SHUTDOWN);
         warn(StrUtil.format("与{}主机的链接断开（{}）。", getClientId(ctx), reason));
     }
 

@@ -1,5 +1,7 @@
 package io.github.gsq.hm.master.handler.hook;
 
+import io.github.gsq.hm.common.Event;
+
 /**
  * Project : cornerstone
  * Class : io.github.gsq.hm.master.handler.hook.IMMsgReceiver
@@ -14,6 +16,8 @@ public interface IMMsgReceiver {
 
     void loseTwice(String clientId);
 
-    void loseLink(String clientId);
+    void online(String clientId);
+
+    void offline(String clientId, Event event);
 
 }

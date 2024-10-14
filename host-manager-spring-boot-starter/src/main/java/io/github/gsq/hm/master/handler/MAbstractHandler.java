@@ -1,6 +1,7 @@
 package io.github.gsq.hm.master.handler;
 
-import cn.hutool.extra.spring.SpringUtil;
+import io.github.gsq.hm.common.EnvUtil;
+import io.github.gsq.hm.common.Event;
 import io.github.gsq.hm.common.models.LoginDTO;
 import io.github.gsq.hm.master.handler.hook.IHeartbeatReceiver;
 import io.github.gsq.hm.master.handler.hook.ILoginReceiver;
@@ -72,26 +73,24 @@ public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
 
     protected final ILoginReceiver getLoginReceiver() {
         if (this.loginReceiver == null) {
-            this.loginReceiver = SpringUtil.getBean(ILoginReceiver.class) != null ?
-                    SpringUtil.getBean(ILoginReceiver.class) :
-                    (clientId, data) -> new LoginDTO(true, "");
+            ILoginReceiver receiver = EnvUtil.getBean(ILoginReceiver.class);
+            this.loginReceiver = receiver != null ? receiver : (clientId, data) -> new LoginDTO(true, "");
         }
         return this.loginReceiver;
     }
 
     protected final IHeartbeatReceiver getHeartbeatReceiver() {
         if (this.heartbeatReceiver == null) {
-            this.heartbeatReceiver = SpringUtil.getBean(IHeartbeatReceiver.class) != null ?
-                    SpringUtil.getBean(IHeartbeatReceiver.class) :
-                    (clientId, data) -> "";
+            IHeartbeatReceiver receiver = EnvUtil.getBean(IHeartbeatReceiver.class);
+            this.heartbeatReceiver = receiver != null ? receiver : (clientId, data) -> "";
         }
         return this.heartbeatReceiver;
     }
 
     protected final IMMsgReceiver getMsgReceiver() {
         if (this.immMsgReceiver == null) {
-            this.immMsgReceiver = SpringUtil.getBean(IMMsgReceiver.class) != null ?
-                    SpringUtil.getBean(IMMsgReceiver.class) :
+            IMMsgReceiver receiver = EnvUtil.getBean(IMMsgReceiver.class);
+            this.immMsgReceiver = receiver != null ? receiver :
                     new IMMsgReceiver() {
 
                         @Override
@@ -105,7 +104,12 @@ public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
                         }
 
                         @Override
-                        public void loseLink(String clientId) {
+                        public void online(String clientId) {
+
+                        }
+
+                        @Override
+                        public void offline(String clientId, Event event) {
 
                         }
 

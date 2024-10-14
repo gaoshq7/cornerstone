@@ -28,7 +28,6 @@ public class SlaveAppTest implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         HmClient client = SpringUtil.getBean(HmClient.class);
         client.run();
-        System.out.println("心跳终端已启动 ...");
     }
 
 }
