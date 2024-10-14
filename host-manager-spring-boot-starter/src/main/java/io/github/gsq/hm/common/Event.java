@@ -1,5 +1,11 @@
 package io.github.gsq.hm.common;
 
+import cn.hutool.core.collection.CollUtil;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.List;
+
 /**
  * Project : cornerstone
  * Class : io.github.gsq.hm.common.Event
@@ -8,10 +14,20 @@ package io.github.gsq.hm.common;
  * @date : 2024-10-11 17:20
  * @note : It's not technology, it's art !
  **/
+@Getter
+@AllArgsConstructor
 public enum Event {
 
-    SLAVE_HEARTBEAT_TIMEOUT,
+    SLAVE_HEARTBEAT_TIMEOUT(EventType.OFFLINE, "主机心跳超时"),
 
-    SLAVE_SHUTDOWN
+    SLAVE_SHUTDOWN(EventType.OFFLINE, "主机失联"),
+
+    SLAVE_DECOMMISSIONED(EventType.OFFLINE, "主机退役"),
+
+    SLAVE_CHANNEL_EXCEPTION(EventType.OFFLINE, "主机信道异常");
+
+    private final EventType type;
+
+    private final String content;
 
 }

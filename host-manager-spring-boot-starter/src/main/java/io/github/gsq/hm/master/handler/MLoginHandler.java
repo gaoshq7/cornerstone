@@ -50,14 +50,13 @@ public class MLoginHandler extends MAbstractHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        String reason;
         if (auth.get()) {
-            reason = "主机失联";
+            Event event = getOfflineEvent(ctx);
+            getMsgReceiver().offline(getClientId(ctx), event);
+            warn(StrUtil.format("与{}主机的链接断开（{}）。", getClientId(ctx), event.getContent()));
         } else {
-            reason = "主机身份认证失败";
+            warn(getClientId(ctx) + "主机登录认证失败。");
         }
-        getMsgReceiver().offline(getClientId(ctx), Event.SLAVE_SHUTDOWN);
-        warn(StrUtil.format("与{}主机的链接断开（{}）。", getClientId(ctx), reason));
     }
 
 }

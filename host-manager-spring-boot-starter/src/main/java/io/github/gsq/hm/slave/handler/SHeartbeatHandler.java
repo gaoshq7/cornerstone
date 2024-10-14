@@ -73,7 +73,7 @@ public class SHeartbeatHandler extends SAbstractHandler {
                 super.getMsgReceiver().loseOnce();
                 break;
             case 2 :
-                warn("心跳包丢失二次...");
+                debug("心跳包丢失二次...");
                 super.getMsgReceiver().loseTwice();
                 break;
         }

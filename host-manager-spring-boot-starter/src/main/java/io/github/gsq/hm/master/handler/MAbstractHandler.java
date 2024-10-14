@@ -3,6 +3,7 @@ package io.github.gsq.hm.master.handler;
 import io.github.gsq.hm.common.EnvUtil;
 import io.github.gsq.hm.common.Event;
 import io.github.gsq.hm.common.models.LoginDTO;
+import io.github.gsq.hm.master.ChannelContext;
 import io.github.gsq.hm.master.handler.hook.IHeartbeatReceiver;
 import io.github.gsq.hm.master.handler.hook.ILoginReceiver;
 import io.github.gsq.hm.master.handler.hook.IMMsgReceiver;
@@ -33,18 +34,26 @@ public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
 
     protected final InternalLogger logger;
 
-    private final AttributeKey<String> clientId = AttributeKey.valueOf("clientId");
+    private final AttributeKey<ChannelContext> context = AttributeKey.valueOf("context");
 
     protected MAbstractHandler() {
         this.logger = InternalLoggerFactory.getInstance(this.getClass());
     }
 
     protected final void setClientId(ChannelHandlerContext ctx, String clientId) {
-        ctx.channel().attr(this.clientId).set(clientId);
+        ctx.channel().attr(this.context).set(new ChannelContext(clientId));
     }
 
     protected final String getClientId(ChannelHandlerContext ctx) {
-        return ctx.channel().attr(clientId).get();
+        return ctx.channel().attr(this.context).get().getClientId();
+    }
+
+    protected final void setOfflineEvent(ChannelHandlerContext ctx, Event event) {
+        ctx.channel().attr(this.context).get().setOfflineEvent(event);
+    }
+
+    protected final Event getOfflineEvent(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(this.context).get().getOfflineEvent();
     }
 
     protected final void debug(String msg) {

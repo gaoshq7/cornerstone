@@ -29,9 +29,8 @@ public class MHeartbeatHandler extends MAbstractHandler {
         if (evt instanceof IdleStateEvent) {
             String clientId = getClientId(ctx);
             if (counter.get() >= Constant.MAX_LOSE_TIME) {
+                setOfflineEvent(ctx, Event.SLAVE_HEARTBEAT_TIMEOUT);
                 ctx.channel().close();
-                getMsgReceiver().offline(clientId, Event.SLAVE_HEARTBEAT_TIMEOUT);
-                warn(clientId + "主机心跳包丢失三次，已断开链接。");
             } else {
                 note(clientId);
             }
@@ -65,6 +64,7 @@ public class MHeartbeatHandler extends MAbstractHandler {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         String clientId = getClientId(ctx);
         super.logger.error("与" + clientId + "主机信道发生异常：", cause);
+        setOfflineEvent(ctx, Event.SLAVE_CHANNEL_EXCEPTION);
         ctx.channel().close();
         debug(StrUtil.format("与{}主机之间的信道已关闭。", clientId));
     }
@@ -80,7 +80,7 @@ public class MHeartbeatHandler extends MAbstractHandler {
                 super.getMsgReceiver().loseOnce(clientId);
                 break;
             case 2 :
-                warn(clientId + "主机心跳包丢失二次...");
+                debug(clientId + "主机心跳包丢失二次...");
                 super.getMsgReceiver().loseTwice(clientId);
                 break;
         }
