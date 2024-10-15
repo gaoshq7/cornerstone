@@ -40,12 +40,32 @@ public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
         this.logger = InternalLoggerFactory.getInstance(this.getClass());
     }
 
+    protected final void auth(ChannelHandlerContext ctx, boolean auth) {
+        ctx.channel().attr(this.context).get().setAuth(auth);
+    }
+
+    protected final boolean isAuth(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(this.context).get().isAuth();
+    }
+
     protected final void setClientId(ChannelHandlerContext ctx, String clientId) {
         ctx.channel().attr(this.context).set(new ChannelContext(clientId));
     }
 
     protected final String getClientId(ChannelHandlerContext ctx) {
         return ctx.channel().attr(this.context).get().getClientId();
+    }
+
+    protected final int getCount(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(this.context).get().getCounter();
+    }
+
+    protected final void record(ChannelHandlerContext ctx) {
+        ctx.channel().attr(this.context).get().increment();
+    }
+
+    protected final void reset(ChannelHandlerContext ctx) {
+        ctx.channel().attr(this.context).get().reset();
     }
 
     protected final void setOfflineEvent(ChannelHandlerContext ctx, Event event) {

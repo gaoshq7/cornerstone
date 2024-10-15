@@ -20,15 +20,12 @@ import io.netty.channel.ChannelHandlerContext;
  **/
 public class MLoginHandler extends MAbstractHandler {
 
-    private final ThreadLocal<Boolean> auth = ThreadLocal.withInitial(() -> true);
-
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object data) {
         Message.BaseMsg msg = (Message.BaseMsg) data;
         if (msg.getType() == Command.CommandType.AUTH) {
-            auth.set(true);
             debug(StrUtil.format("{}主机提交认证信息：{}", msg.getClientId(), msg.getData()));
-            setClientId(ctx, msg.getClientId());
+            super.setClientId(ctx, msg.getClientId());
             ILoginReceiver receiver = getLoginReceiver();
             LoginDTO loginDTO = receiver.auth(msg.getClientId(), msg.getData());
             if (loginDTO.isAuth()) {
@@ -39,7 +36,7 @@ public class MLoginHandler extends MAbstractHandler {
                     MsgUtil.createMsg(msg.getClientId(), Command.CommandType.AUTH_BACK, loginDTO.toString())
             );
             if (!loginDTO.isAuth()) {
-                auth.set(false);
+                super.auth(ctx, false);
                 debug(StrUtil.format("{}主机认证失败，5秒后将断开链接...", msg.getClientId()));
                 ThreadUtil.safeSleep(5000);
                 ctx.channel().close();
@@ -50,7 +47,7 @@ public class MLoginHandler extends MAbstractHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        if (auth.get()) {
+        if (super.isAuth(ctx)) {
             Event event = getOfflineEvent(ctx);
             getMsgReceiver().offline(getClientId(ctx), event);
             warn(StrUtil.format("与{}主机的链接断开（{}）。", getClientId(ctx), event.getContent()));

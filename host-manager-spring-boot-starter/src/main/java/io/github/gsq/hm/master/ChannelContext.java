@@ -23,8 +23,20 @@ public class ChannelContext {
     @Setter
     private Event offlineEvent;
 
+    private int counter;
+
     public ChannelContext(String clientId) {
         this.clientId = clientId;
+        this.auth = true;
+        this.counter = 1;
+    }
+
+    public void increment() {
+        this.counter++;
+    }
+
+    public void reset() {
+        this.counter = 1;
     }
 
     public Event getOfflineEvent() {

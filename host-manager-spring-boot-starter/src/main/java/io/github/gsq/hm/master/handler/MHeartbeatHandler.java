@@ -22,17 +22,14 @@ import io.netty.util.ReferenceCountUtil;
  **/
 public class MHeartbeatHandler extends MAbstractHandler {
 
-    private final ThreadLocal<Integer> counter = ThreadLocal.withInitial(() -> 1);
-
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
-            String clientId = getClientId(ctx);
-            if (counter.get() >= Constant.MAX_LOSE_TIME) {
-                setOfflineEvent(ctx, Event.SLAVE_HEARTBEAT_TIMEOUT);
+            if (getCount(ctx) >= Constant.MAX_LOSE_TIME) {
+                super.setOfflineEvent(ctx, Event.SLAVE_HEARTBEAT_TIMEOUT);
                 ctx.channel().close();
             } else {
-                note(clientId);
+                this.note(ctx);
             }
         } else {
             super.userEventTriggered(ctx, evt);
@@ -44,7 +41,7 @@ public class MHeartbeatHandler extends MAbstractHandler {
         Message.BaseMsg msg = (Message.BaseMsg) data;
         Channel channel = ctx.channel();
         if (msg.getType() == Command.CommandType.PING) {
-            reset();
+            super.reset(ctx);
             IHeartbeatReceiver receiver = getHeartbeatReceiver();
             String result = receiver.handle(msg.getClientId(), msg.getData());
             debug(StrUtil.format("收到来自{}主机的心跳信息：{}", getClientId(ctx), msg.getData()));
@@ -64,27 +61,24 @@ public class MHeartbeatHandler extends MAbstractHandler {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         String clientId = getClientId(ctx);
         super.logger.error("与" + clientId + "主机信道发生异常：", cause);
-        setOfflineEvent(ctx, Event.SLAVE_CHANNEL_EXCEPTION);
+        super.setOfflineEvent(ctx, Event.SLAVE_CHANNEL_EXCEPTION);
         ctx.channel().close();
         debug(StrUtil.format("与{}主机之间的信道已关闭。", clientId));
     }
 
-    private void reset() {
-        this.counter.set(1);
-    }
-
-    private void note(String clientId) {
-        switch (this.counter.get()) {
+    private void note(ChannelHandlerContext ctx) {
+        String clientId = super.getClientId(ctx);
+        switch (getCount(ctx)) {
             case 1 :
                 debug(clientId + "主机心跳包丢失一次...");
-                super.getMsgReceiver().loseOnce(clientId);
+                getMsgReceiver().loseOnce(clientId);
                 break;
             case 2 :
                 debug(clientId + "主机心跳包丢失二次...");
-                super.getMsgReceiver().loseTwice(clientId);
+                getMsgReceiver().loseTwice(clientId);
                 break;
         }
-        this.counter.set(this.counter.get() + 1);
+        super.record(ctx);
     }
 
 }
