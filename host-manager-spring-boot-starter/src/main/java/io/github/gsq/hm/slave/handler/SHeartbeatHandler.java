@@ -19,20 +19,17 @@ import io.netty.util.ReferenceCountUtil;
  **/
 public class SHeartbeatHandler extends SAbstractHandler {
 
-    private int counter = 0;
-
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
-            if (counter < Constant.MAX_LOSE_TIME) {
+            if (getCount(ctx) < Constant.MAX_LOSE_TIME) {
                 IHeartbeatProvider provider = getHeartbeatProvider();
                 String heartbeat = provider.create();
                 ctx.writeAndFlush(MsgUtil.createMsg(Constant.HOSTNAME, Command.CommandType.PING, heartbeat));
-                note();
+                note(ctx);
                 debug("发送心跳包：" + heartbeat);
             } else {
                 ctx.channel().close();
-                getMsgReceiver().loseLink();
                 warn("心跳包丢失三次，已断开链接。");
             }
         } else {
@@ -43,7 +40,7 @@ public class SHeartbeatHandler extends SAbstractHandler {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message.BaseMsg msg) {
         if (msg.getType() == Command.CommandType.PONG) {
-            reset();
+            super.reset(ctx);
             IHeartbeatProvider provider = getHeartbeatProvider();
             provider.result(msg.getData());
             debug("收到心跳响应：" + msg.getData());
@@ -62,22 +59,18 @@ public class SHeartbeatHandler extends SAbstractHandler {
         debug("心跳客户端已关闭。");
     }
 
-    private void reset() {
-        this.counter = 0;
-    }
-
-    private void note() {
-        switch (this.counter) {
+    private void note(ChannelHandlerContext ctx) {
+        switch (getCount(ctx)) {
             case 1 :
                 debug("心跳包丢失一次...");
-                super.getMsgReceiver().loseOnce();
+                getMsgReceiver().loseOnce();
                 break;
             case 2 :
                 debug("心跳包丢失二次...");
-                super.getMsgReceiver().loseTwice();
+                getMsgReceiver().loseTwice();
                 break;
         }
-        this.counter++;
+        super.record(ctx);
     }
 
 }

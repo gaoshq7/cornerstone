@@ -24,11 +24,9 @@ import java.util.concurrent.TimeUnit;
  **/
 public class SLoginHandler extends SAbstractHandler {
 
-    private final ThreadLocal<Boolean> identification = ThreadLocal.withInitial(() -> true);
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        this.identification.set(true);
+        super.initialize(ctx);
         ILoginProvider provider = getLoginProvider();
         String data = provider.create();
         debug(StrUtil.format("{}主机创建登录信息：{}", Constant.HOSTNAME, data));
@@ -52,7 +50,7 @@ public class SLoginHandler extends SAbstractHandler {
             if (loginDTO.isAuth()) {
                 debug(StrUtil.format("{}主机登录成功。", Constant.HOSTNAME));
             } else {
-                this.identification.set(false);
+                super.authFailure(ctx);
                 warn(StrUtil.format("{}主机登录失败，将不会启动断线重连。", Constant.HOSTNAME));
             }
         }
@@ -61,10 +59,11 @@ public class SLoginHandler extends SAbstractHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         debug(StrUtil.format("{}主机与master之间的链接断开。", Constant.HOSTNAME));
+        getMsgReceiver().loseLink();
         super.channelInactive(ctx);
-        if (this.identification.get()) {
+        HmClient client = getClient();
+        if (super.isAuthenticated(ctx) && !client.isShutdown()) {
             debug(StrUtil.format("{}主机5秒后启动断线重连机制。", Constant.HOSTNAME));
-            HmClient client = getClient();
             final EventLoop eventLoop = ctx.channel().eventLoop();
             eventLoop.schedule(() -> client.reconnect(eventLoop), 5L, TimeUnit.SECONDS);
         }

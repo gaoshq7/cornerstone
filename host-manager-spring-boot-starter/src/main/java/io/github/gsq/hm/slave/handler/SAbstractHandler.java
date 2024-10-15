@@ -4,11 +4,13 @@ import cn.hutool.extra.spring.SpringUtil;
 import io.github.gsq.hm.common.EnvUtil;
 import io.github.gsq.hm.common.protobuf.Message;
 import io.github.gsq.hm.slave.HmClient;
+import io.github.gsq.hm.slave.LinkEnv;
 import io.github.gsq.hm.slave.handler.hook.IHeartbeatProvider;
 import io.github.gsq.hm.slave.handler.hook.ILoginProvider;
 import io.github.gsq.hm.slave.handler.hook.ISMsgReceiver;
-import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.AttributeKey;
 import io.netty.util.internal.logging.InternalLogLevel;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
@@ -21,7 +23,6 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
  * @date : 2024-09-03 17:09
  * @note : It's not technology, it's art !
  **/
-@ChannelHandler.Sharable
 public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Message.BaseMsg> {
 
     private ILoginProvider loginProvider;
@@ -32,10 +33,36 @@ public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Messa
 
     private HmClient client;
 
+    private final AttributeKey<LinkEnv> env = AttributeKey.valueOf("env");
+
     protected final InternalLogger logger;
 
     protected SAbstractHandler() {
         this.logger = InternalLoggerFactory.getInstance(this.getClass());
+    }
+
+    protected final void initialize(ChannelHandlerContext ctx) {
+        ctx.channel().attr(this.env).set(new LinkEnv());
+    }
+
+    protected final void authFailure(ChannelHandlerContext ctx) {
+        ctx.channel().attr(this.env).get().setIdentification(false);
+    }
+
+    protected final boolean isAuthenticated(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(this.env).get().isIdentification();
+    }
+
+    protected final int getCount(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(this.env).get().getCounter();
+    }
+
+    protected final void record(ChannelHandlerContext ctx) {
+        ctx.channel().attr(this.env).get().increment();
+    }
+
+    protected final void reset(ChannelHandlerContext ctx) {
+        ctx.channel().attr(this.env).get().reset();
     }
 
     protected final void debug(String msg) {
