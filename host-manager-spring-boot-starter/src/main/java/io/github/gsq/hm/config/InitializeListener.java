@@ -1,6 +1,7 @@
 package io.github.gsq.hm.config;
 
 import io.github.gsq.hm.Constant;
+import io.github.gsq.hm.master.handler.HostManagerImpl;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.context.ApplicationContext;
@@ -41,7 +42,8 @@ public class InitializeListener implements ApplicationListener<ContextRefreshedE
     }
 
     private void mInitialize(ApplicationContext context) {
-
+        HostManagerImpl manager = context.getBean(HostManagerImpl.class);
+        manager.load();
     }
 
     private void sInitialize(ApplicationContext context) {

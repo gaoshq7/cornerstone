@@ -3,7 +3,8 @@ package io.github.gsq.hm.config;
 import io.github.gsq.hm.common.protobuf.Message;
 import io.github.gsq.hm.master.HmServer;
 import io.github.gsq.hm.master.HostManager;
-import io.github.gsq.hm.master.HostManagerImpl;
+import io.github.gsq.hm.master.handler.Host;
+import io.github.gsq.hm.master.handler.HostManagerImpl;
 import io.github.gsq.hm.master.handler.MHeartbeatHandler;
 import io.github.gsq.hm.master.handler.MLoginHandler;
 import io.netty.channel.ChannelInitializer;
@@ -36,8 +37,8 @@ import java.util.concurrent.TimeUnit;
 public class MasterAutoConfigure {
 
     @Bean(name = "host_manager")
-    public HostManager hostManager() {
-        return new HostManagerImpl();
+    public HostManager<Host> hostManager() {
+        return new HostManagerImpl<Host>();
     }
 
     @Bean(name = "host_manager_server")
