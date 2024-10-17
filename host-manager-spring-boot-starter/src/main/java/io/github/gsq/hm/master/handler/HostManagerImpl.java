@@ -1,6 +1,7 @@
 package io.github.gsq.hm.master.handler;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import io.github.gsq.hm.common.EnvUtil;
 import io.github.gsq.hm.master.HostManager;
@@ -27,13 +28,18 @@ public class HostManagerImpl<T extends Host> implements HostManager<T> {
 
     public void load() {
         List<T> hosts = (List<T>) getHostController().load();
+        List<String> hostnames = CollUtil.map(hosts, Host::getHostname, true);
+        int size = CollUtil.distinct(hostnames).size();
+        if (size != hostnames.size()) {
+            throw new RuntimeException("主机集合中有重复元素，加载失败！");
+        }
         this.hosts.addAll(hosts);
     }
 
     @Override
     public List<T> list() {
         this.sort();
-        return (List<T>) CollUtil.unmodifiable(this.hosts);
+        return ListUtil.unmodifiable(this.hosts);
     }
 
     @Override
@@ -58,7 +64,7 @@ public class HostManagerImpl<T extends Host> implements HostManager<T> {
         Host host = get(hostname);
         if (host != null) {
             if (host.isConnected()) {
-                throw new RuntimeException(StrUtil.format("{}主机处于连接状态不可退役", hostname));
+                throw new RuntimeException(StrUtil.format("{}主机处于连接状态不可删除", hostname));
             }
             delete(hostname);
         }
@@ -66,7 +72,7 @@ public class HostManagerImpl<T extends Host> implements HostManager<T> {
 
     protected void delete(String hostname) {
         getHostController().remove(hostname);
-        CollUtil.removeWithAddIf(this.hosts, host -> host.getHostname().equals(hostname));
+        this.hosts.remove(get(hostname));
     }
 
     protected boolean join(String hostname, String data, ChannelHandlerContext ctx) {
@@ -82,6 +88,7 @@ public class HostManagerImpl<T extends Host> implements HostManager<T> {
                     throw new RuntimeException(StrUtil.format("{}主机已存在不能重复添加", hostname));
                 }
                 one.setCtx(ctx);
+                one.update(data);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -65,6 +65,14 @@ public abstract class SAbstractHandler extends SimpleChannelInboundHandler<Messa
         ctx.channel().attr(this.env).get().reset();
     }
 
+    protected final void resign(ChannelHandlerContext ctx) {
+        ctx.channel().attr(this.env).get().setResign(true);
+    }
+
+    protected final boolean isResigned(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(this.env).get().isResign();
+    }
+
     protected final void debug(String msg) {
         if (this.logger.isDebugEnabled()) {
             this.logger.log(InternalLogLevel.DEBUG, msg);

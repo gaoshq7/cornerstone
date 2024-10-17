@@ -17,6 +17,9 @@ public class LinkEnv {
     @Setter
     private boolean identification;
 
+    @Setter
+    private boolean resign;
+
     private int counter;
 
     public LinkEnv() {

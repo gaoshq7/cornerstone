@@ -1,5 +1,6 @@
 package io.github.gsq.hm.master.handler;
 
+import cn.hutool.extra.spring.SpringUtil;
 import io.github.gsq.hm.common.EnvUtil;
 import io.github.gsq.hm.common.Event;
 import io.github.gsq.hm.common.models.LoginDTO;
@@ -25,6 +26,8 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
  **/
 @ChannelHandler.Sharable
 public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
+
+    private HostManagerImpl<Host> manager;
 
     private ILoginReceiver loginReceiver;
 
@@ -145,6 +148,13 @@ public abstract class MAbstractHandler extends ChannelInboundHandlerAdapter {
                     };
         }
         return this.immMsgReceiver;
+    }
+
+    protected HostManagerImpl<Host> getHostManager() {
+        if (this.manager == null) {
+            this.manager = SpringUtil.getBean(HostManagerImpl.class);
+        }
+        return this.manager;
     }
 
 }

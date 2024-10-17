@@ -53,6 +53,16 @@ public class SLoginHandler extends SAbstractHandler {
                 super.authFailure(ctx);
                 warn(StrUtil.format("{}主机登录失败，将不会启动断线重连。", Constant.HOSTNAME));
             }
+        } else if (msg.getType() == Command.CommandType.RESIGN) {
+            super.resign(ctx);
+            debug(StrUtil.format("{}主机收到退役指令，等待退役。", Constant.HOSTNAME));
+            ctx.writeAndFlush(
+                    MsgUtil.createMsg(
+                            Constant.HOSTNAME,
+                            Command.CommandType.RESIGN_BACK,
+                            ""
+                    )
+            );
         }
     }
 
@@ -62,7 +72,7 @@ public class SLoginHandler extends SAbstractHandler {
         getMsgReceiver().loseLink();
         super.channelInactive(ctx);
         HmClient client = getClient();
-        if (super.isAuthenticated(ctx) && !client.isShutdown()) {
+        if (super.isAuthenticated(ctx) && !client.isShutdown() && !super.isResigned(ctx)) {
             debug(StrUtil.format("{}主机5秒后启动断线重连机制。", Constant.HOSTNAME));
             final EventLoop eventLoop = ctx.channel().eventLoop();
             eventLoop.schedule(() -> client.reconnect(eventLoop), 5L, TimeUnit.SECONDS);

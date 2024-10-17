@@ -1,6 +1,7 @@
 package io.github.gsq.hm.master.handler;
 
 import cn.hutool.core.util.StrUtil;
+import io.github.gsq.hm.common.Event;
 import io.github.gsq.hm.common.MsgUtil;
 import io.github.gsq.hm.common.protobuf.Command;
 import io.github.gsq.hm.master.ChannelContext;
@@ -24,9 +25,11 @@ public class Host {
     @Getter
     private final String hostname;
 
-    private ChannelHandlerContext ctx;
+    private final transient AttributeKey<ChannelContext> context = AttributeKey.valueOf("context");
 
-    protected Host(String hostname) {
+    private transient ChannelHandlerContext ctx;
+
+    public Host(String hostname) {
         this.hostname = hostname;
     }
 
@@ -36,8 +39,7 @@ public class Host {
 
     protected final void setCtx(ChannelHandlerContext ctx) {
         if (ctx == null) throw new RuntimeException("信道处理器不能为null");
-        final AttributeKey<ChannelContext> context = AttributeKey.valueOf("context");
-        String clientId = ctx.channel().attr(context).get().getClientId();
+        String clientId = ctx.channel().attr(this.context).get().getClientId();
         if (!clientId.equals(this.hostname)) {
             throw new RuntimeException("主机名与客户端id不匹配");
         }
@@ -56,6 +58,10 @@ public class Host {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected void update(String data) {
+
     }
 
     public boolean isConnected() {

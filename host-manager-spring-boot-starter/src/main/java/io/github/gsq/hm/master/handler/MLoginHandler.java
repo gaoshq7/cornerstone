@@ -29,7 +29,13 @@ public class MLoginHandler extends MAbstractHandler {
             ILoginReceiver receiver = getLoginReceiver();
             LoginDTO loginDTO = receiver.auth(msg.getClientId(), msg.getData());
             if (loginDTO.isAuth()) {
-                getMsgReceiver().online(msg.getClientId());
+                boolean isJoin = getHostManager().join(msg.getClientId(), msg.getData(), ctx);
+                if (isJoin) {
+                    getMsgReceiver().online(msg.getClientId());
+                } else {
+                    loginDTO.setAuth(false);
+                    warn(StrUtil.format("{}主机已存在，不可重复添加。", msg.getClientId()));
+                }
             }
             debug(StrUtil.format("{}主机认证结果：{}", msg.getClientId(), loginDTO));
             ctx.channel().writeAndFlush(
@@ -42,6 +48,10 @@ public class MLoginHandler extends MAbstractHandler {
                 ctx.channel().close();
                 debug(StrUtil.format("与{}主机的链接已断开。", msg.getClientId()));
             }
+        } else if (msg.getType() == Command.CommandType.RESIGN_BACK) {
+            debug(StrUtil.format("{}主机已完成退役准备，即将断开链接。", getClientId(ctx)));
+            super.setOfflineEvent(ctx, Event.SLAVE_DECOMMISSIONED);
+            ctx.channel().close();
         }
     }
 
