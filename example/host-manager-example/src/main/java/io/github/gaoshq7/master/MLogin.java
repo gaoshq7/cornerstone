@@ -19,7 +19,7 @@ public class MLogin implements ILoginReceiver {
     @Override
     public LoginDTO auth(String clientId, String data) {
         LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setAuth(false);
+        loginDTO.setAuth(true);
         loginDTO.setData("来就来呗" + IdUtil.fastSimpleUUID());
         return loginDTO;
     }
