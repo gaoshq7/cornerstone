@@ -19,4 +19,8 @@
     <name>test-case</name>
     <description>测试用例合集</description>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
 </project>

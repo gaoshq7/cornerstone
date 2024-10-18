@@ -64,7 +64,7 @@
     <!-- 跳过测试 -->
     <skipTests>true</skipTests>
     <maven.test.skip>true</maven.test.skip>
-    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <maven.deploy.skip>false</maven.deploy.skip>
     <!-- 第三方类库版本 -->
     <lombok.version>1.18.34</lombok.version>
     <hutool-all.version>[5.8.0, 5.8.99]</hutool-all.version>
@@ -140,23 +140,21 @@
         </configuration>
       </plugin>
 
-      <!-- Source -->
+      <!-- deploy -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>3.1.0</version>
-        <inherited>true</inherited>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
+        <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
-          <excludeResources>true</excludeResources>
-          <useDefaultExcludes>true</useDefaultExcludes>
+          <skip>${maven.deploy.skip}</skip>
+        </configuration>
+      </plugin>
+
+      <!-- install -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <configuration>
+          <skip>${maven.deploy.skip}</skip>
         </configuration>
       </plugin>
     </plugins>
@@ -165,27 +163,52 @@
   <profiles>
     <profile>
       <id>release</id>
+      <properties>
+        <maven.javadoc.skip>false</maven.javadoc.skip>
+      </properties>
       <build>
         <plugins>
+          <!-- Source -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.1.0</version>
+            <inherited>true</inherited>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <excludeResources>true</excludeResources>
+              <useDefaultExcludes>true</useDefaultExcludes>
+            </configuration>
+          </plugin>
+
           <!-- Javadoc -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.10.4</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
                 <goals>
                   <goal>jar</goal>
                 </goals>
+                <configuration>
+                  <doclint>none</doclint>
+                </configuration>
               </execution>
             </executions>
           </plugin>
+
           <!-- GPG -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
             <configuration>
               <executable>/usr/local/bin/gpg</executable>
             </configuration>
@@ -198,15 +221,14 @@
               </execution>
             </executions>
           </plugin>
+
           <!-- sonatype -->
           <plugin>
             <groupId>org.sonatype.central</groupId>
             <artifactId>central-publishing-maven-plugin</artifactId>
-            <version>0.4.0</version>
             <extensions>true</extensions>
             <configuration>
               <publishingServerId>sonatype-gaoshq7</publishingServerId>
-              <tokenAuth>true</tokenAuth>
             </configuration>
           </plugin>
         </plugins>
