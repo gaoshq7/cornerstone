@@ -1,10 +1,7 @@
 package io.github.gsq.hm.common;
 
-import cn.hutool.core.collection.CollUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
 
 /**
  * Project : cornerstone

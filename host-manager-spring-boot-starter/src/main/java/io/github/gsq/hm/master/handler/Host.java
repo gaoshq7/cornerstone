@@ -1,7 +1,6 @@
 package io.github.gsq.hm.master.handler;
 
 import cn.hutool.core.util.StrUtil;
-import io.github.gsq.hm.common.Event;
 import io.github.gsq.hm.common.MsgUtil;
 import io.github.gsq.hm.common.protobuf.Command;
 import io.github.gsq.hm.master.ChannelContext;
