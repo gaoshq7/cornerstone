@@ -1,0 +1,13 @@
+             __________
+          .~#########%%;~.
+         /############%%;`\
+        /######/~\/~\%%;,;,\
+       |#######\    /;;;;.,.|
+       |#########\/%;;;;;.,.|
+       |##/~~\####%;;;/~~\;,|
+       |#|  o  \##%;/  o  |.|   ${AnsiColor.BRIGHT_GREEN} Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version} ${AnsiColor.DEFAULT}
+       |##\____/##%;\____/.,|   ${AnsiColor.BRIGHT_BLUE} 欢迎使用cornerstone开源套件，源码地址：https://github.com/gaoshq7/cornerstone ${AnsiColor.DEFAULT}
+       \#########/\;;;;;;,, /
+         \######/%;\;;;;, /
+          |######%%;;;;,.|
+          |# # # % ; ; ;,|
