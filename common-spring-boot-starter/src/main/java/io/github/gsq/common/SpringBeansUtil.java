@@ -12,14 +12,19 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -154,6 +159,23 @@ public class SpringBeansUtil implements ApplicationContextAware {
                 }
             }
         }
+    }
+
+    public static void dynamicLoadPackage(String basePackage, Function<BeanDefinition, String> function) {
+        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
+        scanner.addIncludeFilter(new AnnotationTypeFilter(Component.class));
+        ConfigurableApplicationContext configurableContext = (ConfigurableApplicationContext) SpringBeansUtil.context;
+        final BeanDefinitionRegistry registry = (BeanDefinitionRegistry) configurableContext.getBeanFactory();
+        scanner.findCandidateComponents(basePackage).forEach(beanDefinition -> {
+            try {
+                Class<?> clazz = Class.forName(beanDefinition.getBeanClassName());
+                BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
+                String name = function != null ? function.apply(beanDefinition) : beanDefinition.getBeanClassName();
+                registry.registerBeanDefinition(name, builder.getBeanDefinition());
+            } catch (Exception e) {
+                log.error("动态注入Bean错误：{}", e.getMessage(), e);
+            }
+        });
     }
 
 }

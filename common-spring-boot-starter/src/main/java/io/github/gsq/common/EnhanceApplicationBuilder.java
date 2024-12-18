@@ -48,6 +48,7 @@ public class EnhanceApplicationBuilder extends SpringApplicationBuilder {
         });
     }
 
+    @Deprecated
     public EnhanceApplicationBuilder extendBeanPackage(String packageName) {
         if (StrUtil.isEmpty(packageName)) {
             throw new IllegalArgumentException("预加载类路径不能为空");
@@ -65,8 +66,7 @@ public class EnhanceApplicationBuilder extends SpringApplicationBuilder {
                 fliedName = "scanBasePackages";
             }
         } else {
-            proxy = componentScan;
-            fliedName = "value";
+            throw new RuntimeException("请不要在启动类中使用@ComponentScan注解");
         }
         try {
             InvocationHandler handler = Proxy.getInvocationHandler(proxy);
