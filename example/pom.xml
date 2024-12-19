@@ -11,6 +11,7 @@
     <modules>
         <module>host-manager-example</module>
         <module>common-example</module>
+        <module>grpc-example</module>
     </modules>
 
     <modelVersion>4.0.0</modelVersion>

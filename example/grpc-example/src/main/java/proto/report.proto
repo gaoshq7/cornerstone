@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package rpc.v1;
+
+option java_multiple_files = true;
+option java_package = "io.github.gaoshq7.agent";
+
+import "common/Common.proto";
+
+service ReportService {
+
+  rpc uploadReport (ReportData) returns (Commands) {
+
+  }
+
+  rpc uploadStreamReport (stream ReportData) returns (Commands) {
+
+  }
+
+}
+
+enum ReportType {
+  Normal = 0;
+  Error = 1;
+}
+
+message ReportData {
+
+  ReportType reportType = 1;
+
+  repeated rpc.v1.KeyStringValuePair detail = 2;
+
+}
